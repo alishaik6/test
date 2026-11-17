@@ -2,6 +2,28 @@
 
 **Purpose:** Copy one prompt at a time into Claude Code after placing team source repositories and documents in a local workspace. Each prompt produces inspectable deliverables and acceptance evidence before proceeding. This is a build specification, **not** a claim that the pipeline has already been implemented.
 
+## Step 0 — Master prompt for Claude Code (copy and paste first)
+
+**Operator instructions:** Clone this repository, open Claude Code in the repository root, and paste the following prompt exactly once to initiate implementation. The prompt is a development orchestrator, **not** a command to run the KB against real team files. Review the resulting implementation and verification evidence at each gate. Do not provide real secrets or unapproved proprietary inputs during development.
+
+```text
+You are implementing the reusable, local-first Knowledge Base Builder described in knowledge-base-builder/IMPLEMENTATION_PLAYBOOK.md. Read the ENTIRE playbook before making changes, including the numbered implementation prompts, corresponding verification prompts, stage-controller requirements, and file-by-file approval contract. Treat the playbook as the authoritative specification; identify contradictions and ask before making consequential assumptions.
+
+Goal: build ONE reusable Claude Code KB Builder skill, with Python utilities and a persistent execution controller, plus the separate read-only KB consumer skill that will be published with each team's curated knowledge base. I have Claude Code TERMINAL access only; do not assume an Anthropic API key or programmatic API access.
+
+Support local Git repositories, PDFs including scanned PDFs, Word/DOCX, PowerPoint/PPTX, Excel/XLSX/XLSM, CSV/TSV, and embedded/standalone images and diagrams. Inventory and report unsupported or unreadable inputs; never silently omit files. Preserve precise source provenance and keep raw inputs read-only. For spreadsheet inputs, preserve workbook/sheet/cell/formula references and do not execute macros.
+
+IMPLEMENTATION WORKFLOW: Follow the playbook's implementation prompts sequentially. For EACH meaningful implementation step: implement only that step, run its immediately following independent verification prompt, execute actual tests, present changed files and evidence with PASS/FAIL/NOT RUN, and STOP for my explicit approval. Do not automatically move to the next implementation step, even when tests pass. If the session ends, resume from persisted implementation checkpoints without relying on chat history. Do not mark unexecuted tests as passed.
+
+RUNTIME WORKFLOW TO IMPLEMENT: The finished KB Builder defaults to interactive, ONE SOURCE FILE per invocation. It should perform extraction, independently verify extraction, interpret any images/diagrams, verify interpretation, generate curated knowledge, verify knowledge, then STOP and present artifacts and evidence for my explicit approval. Do not process the next source file until approval is recorded against current hashes. Allow fix/retry and resume. For repositories, use bounded file/symbol units and a subsequent repository/cross-file reconciliation. After all files are approved, run a separately gated cross-file reconciliation and publication workflow. Automatic processing is optional and opt-in only after representative fixture coverage; it must preserve verification, exception handling, and approval for high-risk outputs. Publishing requires explicit approval.
+
+Use deterministic Python utilities for file discovery, extraction, hashing, structural diff, manifests, persistence, validation, and reporting. Use Claude Code for semantic interpretation and knowledge curation in bounded batches. Implement an explicit state machine and test pass/fail/interrupt/retry/stale approval/resume scenarios. Prevent unapproved raw source code, sensitive data, or credentials from entering the published KB.
+
+FIRST ACTIONS ONLY: inspect the repository, read and summarize the full playbook and its dependencies, create an implementation plan mapping every requirement to a numbered step and verification test, identify prerequisites and gaps, and propose a directory layout. Then begin ONLY the first implementation step and its verification. STOP and wait for my review and explicit approval before the second step. Do not claim the full skill is complete until every step is implemented, tested, approved, and integrated.
+```
+
+**After each stop:** inspect the verification report, ask for corrections if needed, or explicitly approve the current implementation step and tell Claude Code to continue with the next approved step. When the builder is fully implemented, use its separate runtime commands to process one source file at a time.
+
 ## 0A. Mandatory execution contract — one stage, automated verification, human approval
 
 **Two distinct phases:** (A) Build the utilities and builder skill using the sequential prompts below; (B) run the finished builder skill against team inputs. Do not confuse implementation-step completion with knowledge-processing-stage completion.
